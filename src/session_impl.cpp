@@ -413,6 +413,8 @@ namespace aux {
 #endif
 		, m_external_udp_port(0)
 		, m_udp_socket(m_io_service)
+		// TODO: 4 introduce an adapter layer between the udp socket(s) and the
+		// utp socket manager
 		, m_utp_socket_manager(m_settings, m_udp_socket, m_stats_counters, NULL
 			, boost::bind(&session_impl::incoming_connection, this, _1))
 #ifdef TORRENT_USE_OPENSSL
@@ -1757,7 +1759,10 @@ namespace aux {
 #endif
 
 			if (m_alerts.should_post<listen_failed_alert>())
-				m_alerts.emplace_alert<listen_failed_alert>(device, last_op, ec, sock_type);
+			{
+				m_alerts.emplace_alert<listen_failed_alert>(device, port
+					, last_op, ec, sock_type);
+			}
 
 			return ret;
 		}
@@ -1805,7 +1810,10 @@ namespace aux {
 				, ec.category().name(), ec.message().c_str());
 #endif
 			if (m_alerts.should_post<listen_failed_alert>())
-				m_alerts.emplace_alert<listen_failed_alert>(device, last_op, ec, sock_type);
+			{
+				m_alerts.emplace_alert<listen_failed_alert>(device, port
+					, last_op, ec, sock_type);
+			}
 			return ret;
 		}
 		ret.local_endpoint = ret.sock->local_endpoint(ec);
@@ -1835,7 +1843,10 @@ namespace aux {
 				, device.c_str(), ec.message().c_str());
 #endif
 			if (m_alerts.should_post<listen_failed_alert>())
-				m_alerts.emplace_alert<listen_failed_alert>(device, last_op, ec, sock_type);
+			{
+				m_alerts.emplace_alert<listen_failed_alert>(device, port
+					, last_op, ec, sock_type);
+			}
 			return ret;
 		}
 
