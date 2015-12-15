@@ -4616,10 +4616,6 @@ retry:
 	{
 		TORRENT_ASSERT(!p.save_path.empty());
 
-#ifndef TORRENT_NO_DEPRECATE
-		p.update_flags();
-#endif
-
 		add_torrent_params params = p;
 		if (string_begins_no_case("magnet:", params.url.c_str()))
 		{
