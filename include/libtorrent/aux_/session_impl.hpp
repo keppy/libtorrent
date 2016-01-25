@@ -122,10 +122,12 @@ namespace libtorrent
 	typedef boost::function<bool(udp::endpoint const& source
 		, bdecode_node const& request, entry& response)> dht_extension_handler_t;
 
-	// TODO: 4 this struct should have a UDP socket too
 	struct listen_socket_t
 	{
-		listen_socket_t(): external_port(0), ssl(false)
+		listen_socket_t()
+			: tcp_external_port(0)
+			, udp_external_port(0)
+			, ssl(false)
 		{
 			tcp_port_mapping[0] = -1;
 			tcp_port_mapping[1] = -1;
@@ -137,7 +139,7 @@ namespace libtorrent
 		// to the WAN IP address of NAT-PMP or UPnP router
 		address external_address;
 
-		// this is a cached local endppoint for the listen socket
+		// this is a cached local endpoint for the listen socket
 		tcp::endpoint local_endpoint;
 
 		// this is typically set to the same as the local
@@ -147,7 +149,8 @@ namespace libtorrent
 		// on the NAT box itself. This is the port that has
 		// to be published to peers, since this is the port
 		// the client is reachable through.
-		int external_port;
+		int tcp_external_port;
+		int udp_external_port;
 
 		// 0 is natpmp 1 is upnp
 		int tcp_port_mapping[2];
@@ -156,8 +159,9 @@ namespace libtorrent
 		// set to true if this is an SSL listen socket
 		bool ssl;
 
-		// the actual socket
+		// the actual sockets (TCP listen socket and UDP socket)
 		boost::shared_ptr<tcp::acceptor> sock;
+		boost::shared_ptr<udp_socket> udp_sock;
 	};
 
 	namespace aux
@@ -1037,12 +1041,12 @@ namespace libtorrent
 			// m_listen_sockets
 			int m_external_udp_port;
 
-			udp_socket m_udp_socket;
+//			udp_socket m_udp_socket;
 			libtorrent::utp_socket_manager m_utp_socket_manager;
 
 #ifdef TORRENT_USE_OPENSSL
 			// used for uTP connectons over SSL
-			udp_socket m_ssl_udp_socket;
+//			udp_socket m_ssl_udp_socket;
 			libtorrent::utp_socket_manager m_ssl_utp_socket_manager;
 #endif
 
