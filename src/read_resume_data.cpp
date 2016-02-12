@@ -41,7 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "libtorrent/read_resume_data.hpp"
 #include "libtorrent/add_torrent_params.hpp"
 #include "libtorrent/announce_entry.hpp"
-#include "libtorrent/io.hpp"
+#include "libtorrent/socket_io.hpp" // for read_*_endpoint()
 
 namespace libtorrent
 {
@@ -275,28 +275,28 @@ namespace libtorrent
 		{
 			char const* ptr = peers_entry.string_ptr();
 			for (int i = 0; i < peers_entry.string_length(); i += 6)
-				ret.peers.push_back(read_v4_endpoint(ptr));
+				ret.peers.push_back(read_v4_endpoint<tcp::endpoint>(ptr));
 		}
 
 		if (bdecode_node peers_entry = rd.dict_find_string("peers6"))
 		{
 			char const* ptr = peers_entry.string_ptr();
 			for (int i = 0; i < peers_entry.string_length(); i += 18)
-				ret.peers.push_back(read_v6_endpoint(ptr));
+				ret.peers.push_back(read_v6_endpoint<tcp::endpoint>(ptr));
 		}
 
 		if (bdecode_node peers_entry = rd.dict_find_string("banned_peers"))
 		{
 			char const* ptr = peers_entry.string_ptr();
 			for (int i = 0; i < peers_entry.string_length(); i += 6)
-				ret.banned_peers.push_back(read_v4_endpoint(ptr));
+				ret.banned_peers.push_back(read_v4_endpoint<tcp::endpoint>(ptr));
 		}
 
 		if (bdecode_node peers_entry = rd.dict_find_string("banned_peers6"))
 		{
 			char const* ptr = peers_entry.string_ptr();
 			for (int i = 0; i < peers_entry.string_length(); i += 18)
-				ret.banned_peers.push_back(read_v6_endpoint(ptr));
+				ret.banned_peers.push_back(read_v6_endpoint<tcp::endpoint>(ptr));
 		}
 
 #error read "unfinished" pieces

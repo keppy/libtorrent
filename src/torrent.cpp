@@ -384,8 +384,8 @@ namespace libtorrent
 		for (std::vector<tcp::endpoint>::const_iterator i = p.banned_peers.begin()
 			, end(p.banned_peers.end()); i != end; ++i)
 		{
-			torrent_peer* p = add_peer(*i, peer_info::resume_data);
-			if (p) ban_peer(p);
+			torrent_peer* peer = add_peer(*i, peer_info::resume_data);
+			if (peer) ban_peer(peer);
 		}
 
 		if (!p.peers.empty() || !p.banned_peers.empty())
